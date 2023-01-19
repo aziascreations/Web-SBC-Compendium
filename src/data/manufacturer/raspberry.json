@@ -4,17 +4,17 @@
 		{
 			"title": "Official Website",
 			"url": "https://www.raspberrypi.org/",
-			"official": true,
-			"store": false,
-			"wiki": false
+			"official": true
 		},
 		{
 			"title": "Wikipedia Page",
 			"url": "https://en.wikipedia.org/wiki/Raspberry_Pi",
-			"official": false,
-			"store": false,
 			"wiki": true
 		}
 	],
-	"logo": "Raspberry_Pi.svg"
+	"logo": {
+		"url": "/imgs/raspberry/Raspberry_Pi.svg",
+		"description": "Raspberry Pi Foundation's logo",
+		"attribution": {"author": "raspberry", "license": "raspberry"}
+	}
 }

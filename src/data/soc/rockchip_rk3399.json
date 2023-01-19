@@ -14,15 +14,11 @@
 		{
 			"title": "Rockchip Wiki's Page",
 			"url": "https://rockchip.wikidot.com/rk3399",
-			"official": false,
-			"store": false,
 			"wiki": true
 		},
 		{
 			"title": "Rockchip's Wikipedia Page",
 			"url": "https://en.wikipedia.org/wiki/Rockchip#RK3399",
-			"official": false,
-			"store": false,
 			"wiki": true
 		}
 	]

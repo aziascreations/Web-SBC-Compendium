@@ -55,7 +55,25 @@
 			Search
 		</div>
 		<div id="screen-browse" class="screen debug" hidden>
-			Browse
+			<!-- This container will be populated with the templates below by JS. -->
+			<div id="container-browse-entries"></div>
+			
+			<!-- Browse section's templates - START -->
+			<template id="bms">
+				<section class="container-browse-section debug2">
+					<img id="bms-logo" src="/imgs/placeholder.png" alt="Manufacturer's Logo" >
+					<h2 id="bms-title">${template.browse.unset.manufacturer.name}</h2>
+					<div id="bms-entries" class="debug3"></div>
+				</section>
+			</template>
+			
+			<template id="bmi">
+				<div>
+					<img id="bmi-img" src="/imgs/placeholder.png" alt="Product Image" loading="lazy">
+					<h3 id="bmi-name">${template.browse.unset.item.name}</h3>
+				</div>
+			</template>
+			<!-- Browse section's templates - END -->
 		</div>
 	</main>
 	
@@ -65,7 +83,6 @@
 		</div>
 	</footer>
 	
-	<template></template>
 	
 	<script src="/resources/bootstrap/5.3.0-alpha1/js/bootstrap.min.js"></script>
 	<script type="module" src="/resources/sbc-compendium/js/app.js"></script>

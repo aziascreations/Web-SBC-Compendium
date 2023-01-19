@@ -22,10 +22,12 @@ if not os.path.exists(output_dir):
     sys.exit(3)
 
 output_data = {
+    "author": {},
     "manufacturer": {},
     "sbc": {},
     "cpu": {},
     "soc": {},
+    "license": {},
     "version": compile_time
 }
 
@@ -45,6 +47,8 @@ output_data = handle_directory(input_dir, "manufacturer", output_data)
 output_data = handle_directory(input_dir, "sbc", output_data)
 output_data = handle_directory(input_dir, "cpu", output_data)
 output_data = handle_directory(input_dir, "soc", output_data)
+output_data = handle_directory(input_dir, "license", output_data)
+output_data = handle_directory(input_dir, "author", output_data)
 
 try:
     os.remove(os.path.join(output_dir, output_filename))

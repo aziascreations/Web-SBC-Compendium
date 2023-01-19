@@ -33,8 +33,9 @@ popd
 goto :minify-js-end
 :minify-js-subroutine
 for %%f in (*.js) do (
-    call "%~dp0node_modules\.bin\terser" %%f --ecma 2017 --keep-classnames --keep-fnames --mangle -o %%~nf.min.js
+    call "%~dp0node_modules\.bin\terser" %%f --ecma 2017 --mangle -o %%~nf.min.js
 )
+:: TODO: Find a way to simplify templates names from the enums !
 :: TODO: Remove: --keep-classnames --keep-fnames
 for /D %%d in (*) do (
     cd %%d
@@ -56,6 +57,10 @@ call node_modules\.bin\sass ./src/scss/app.scss ./build/resources/sbc-compendium
 :minify-css
 echo Minifying CSS...
 call node_modules\.bin\minify ./build/resources/sbc-compendium/css/app.css > ./build/resources/sbc-compendium/css/app.min.css
+
+:copy-images
+echo Copying images...
+xcopy src\images build\imgs /e /i /s /Y > nul
 
 :copy-html
 echo Copying HTML files...

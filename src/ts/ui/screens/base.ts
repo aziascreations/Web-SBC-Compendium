@@ -1,3 +1,5 @@
+import {App} from "../../data/app";
+
 export const registeredScreens: Array<AppScreen> = [];
 
 const screenDomIdPrefix = "screen-";
@@ -5,6 +7,7 @@ const screenDomIdPrefix = "screen-";
 export abstract class AppScreen {
     id: string;
     element: HTMLElement;
+    parentApp: App = App.getBlank();
     
     protected constructor(id: string) {
         this.id = id;
@@ -53,8 +56,9 @@ export function getScreenById(id: string): AppScreen | null {
     return null;
 }
 
-export function registerScreen(screen: AppScreen): boolean {
+export function registerScreen(screen: AppScreen, newParentApp: App): boolean {
     if(getScreenById(screen.id) == null) {
+        screen.parentApp = newParentApp;
         registeredScreens.push(screen);
         return true;
     }

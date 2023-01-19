@@ -17,21 +17,42 @@ export class Link {
         this.wiki = wiki;
     }
     
-    static fromRawData(rawData: object) {
-        // Checking if all required fields are present.
-        if(!("title" in rawData && "url" in rawData && "official" in rawData && "store" in rawData && "wiki" in rawData)) {
-            throw new Error('Missing fields !');
-        }
-    
-        // Checking if the numbers are properly typed.
-        if(!(typeof rawData["title"] === "string" && typeof rawData["url"] === "string"
-            && typeof rawData["official"] === "boolean" && typeof rawData["store"] === "boolean"
-            && typeof rawData["wiki"] === "boolean")) {
-            throw new Error("One or more of the URL field isn\'t properly typed !");
-        }
+    static fromRawData(rawData: Record<string, any>) {
+        const expectedFields = [
+            {name: "title", type: "string", nullable: false, omittable: false, default: null},
+            {name: "url", type: "string", nullable: false, omittable: false, default: null},
+            {name: "official", type: "boolean", nullable: false, omittable: true, default: false},
+            {name: "store", type: "boolean", nullable: false, omittable: true, default: false},
+            {name: "wiki", type: "boolean", nullable: false, omittable: true, default: false},
+        ];
         
+        expectedFields.forEach(field => {
+            // Checking if non-omittable fields are present.
+            if(!field.omittable && !(field.name in rawData)) {
+                throw new Error("Error 419.2");
+            }
+            // Setting omitted omittable fields to null.
+            if(field.omittable && !(field.name in rawData)) {
+                rawData[field.name] = field.default;
+            }
+            // Checking for non-nullable fields.
+            if(rawData[field.name] === null && !field.nullable) {
+                throw new Error("Error 420.2");
+            }
+            // Checking if the field is properly typed.
+            if(!(typeof rawData[field.name] === field.type)) {
+                throw new Error("Error 421.2");
+            }
+        });
+        
+        // WARNING: Typescript doesn't warn you if one of these fields is null when the constructor doesn't allow it !
+        // TODO: Check if making them all nullable and handled in the getters would be better.
         return new this(
-            rawData["title"], new URL(rawData["url"]), rawData["official"], rawData["store"], rawData["wiki"]
+            rawData["title"],
+            rawData["url"],
+            rawData["official"],
+            rawData["store"],
+            rawData["wiki"],
         );
     }
     
@@ -45,6 +66,163 @@ export class Link {
         rawData.every(link => returnedLinks.push(this.fromRawData(link)));
         
         return returnedLinks;
+    }
+}
+
+export class Author {
+    readonly name: string;
+    readonly url: URL | null;
+    
+    constructor(name: string, url: URL | null) {
+        this.name = name;
+        this.url = url;
+    }
+    
+    static fromRawData(rawData: Record<string, any>) {
+        const expectedFields = [
+            {name: "name", type: "string", nullable: false, omittable: false, default: null},
+            {name: "url", type: "string", nullable: true, omittable: true, default: null},
+        ];
+        
+        expectedFields.forEach(field => {
+            // Checking if non-omittable fields are present.
+            if(!field.omittable && !(field.name in rawData)) {
+                throw new Error("Error 419.3");
+            }
+            // Setting omitted omittable fields to null.
+            if(field.omittable && !(field.name in rawData)) {
+                rawData[field.name] = field.default;
+            }
+            // Checking for non-nullable fields.
+            if(rawData[field.name] === null && !field.nullable) {
+                throw new Error("Error 420.3");
+            }
+            // Checking if the field is properly typed.
+            if(!(typeof rawData[field.name] === field.type)) {
+                throw new Error("Error 421.3");
+            }
+        });
+        
+        // WARNING: Typescript doesn't warn you if one of these fields is null when the constructor doesn't allow it !
+        // TODO: Check if making them all nullable and handled in the getters would be better.
+        return new this(rawData["name"], new URL(rawData["url"]));
+    }
+    
+    static fromRawDataMap(rawData: object): Map<string, Author> {
+        if(!(typeof rawData === "object")) {
+            throw new Error("The given raw data for an author isn't an object !");
+        }
+        
+        const returnedAuthors: Map<string, Author> = new Map<string, Author>();
+        
+        new Map(Object.entries(rawData)).forEach((rawAuthor: object, key: string) => {
+            returnedAuthors.set(key, this.fromRawData(rawAuthor))
+        });
+        
+        return returnedAuthors;
+    }
+    
+}
+
+export class Attribution {
+    readonly author: string;
+    readonly license: string;
+    
+    constructor(author: string, license: string) {
+        this.author = author;
+        this.license = license;
+    }
+    
+    static fromRawData(rawData: Record<string, any>) {
+        const expectedFields = [
+            {name: "author", type: "string", nullable: false, omittable: false, default: null},
+            {name: "license", type: "string", nullable: false, omittable: false, default: null},
+        ];
+        
+        expectedFields.forEach(field => {
+            // Checking if non-omittable fields are present.
+            if(!field.omittable && !(field.name in rawData)) {
+                throw new Error("Error 419.4");
+            }
+            // Setting omitted omittable fields to null.
+            if(field.omittable && !(field.name in rawData)) {
+                rawData[field.name] = field.default;
+            }
+            // Checking for non-nullable fields.
+            if(rawData[field.name] === null && !field.nullable) {
+                throw new Error("Error 420.4");
+            }
+            // Checking if the field is properly typed.
+            if(!(typeof rawData[field.name] === field.type)) {
+                throw new Error("Error 421.4");
+            }
+        });
+        
+        // WARNING: Typescript doesn't warn you if one of these fields is null when the constructor doesn't allow it !
+        // TODO: Check if making them all nullable and handled in the getters would be better.
+        return new this(rawData["author"], rawData["license"]);
+    }
+}
+
+export class Image {
+    url: URL;
+    private readonly description: string | null;
+    readonly attribution: Attribution;
+    
+    constructor(url: URL, description: string | null, attribution: Attribution) {
+        this.url = url;
+        this.description = description;
+        this.attribution = attribution;
+    }
+    
+    getDescription(): string {
+        return this.description ? this.description : "";
+    }
+    
+    static fromRawData(rawData: Record<string, any>): Image {
+        const expectedFields = [
+            {name: "url", type: "string", nullable: false, omittable: false, default: null},
+            {name: "description", type: "string", nullable: true, omittable: true, default: null},
+            {name: "attribution", type: "object", nullable: false, omittable: false, default: null},
+        ];
+        
+        expectedFields.forEach(field => {
+            // Checking if non-omittable fields are present.
+            if(!field.omittable && !(field.name in rawData)) {
+                throw new Error("Error 419.5");
+            }
+            // Setting omitted omittable fields to null.
+            if(field.omittable && !(field.name in rawData)) {
+                rawData[field.name] = field.default;
+            }
+            // Checking for non-nullable fields.
+            if(rawData[field.name] === null && !field.nullable) {
+                throw new Error("Error 420.5");
+            }
+            // Checking if the field is properly typed.
+            if(!(typeof rawData[field.name] === field.type)) {
+                throw new Error("Error 421.5");
+            }
+        });
+        
+        // Fixing potential issues
+        if(rawData["url"].startsWith("/")) {
+            rawData["url"] = location.protocol + '//' + location.host + ":" + location.port + rawData["url"];
+        }
+        
+        return new this(new URL(rawData["url"]), rawData["description"], Attribution.fromRawData(rawData["attribution"]));
+    }
+    
+    static fromRawDataArray(rawData: Array<object>): Array<Image> {
+        if(!Array.isArray(rawData)) {
+            throw new Error("The given raw data isn't an array !");
+        }
+        
+        const returnedImages: Image[] = [];
+        
+        rawData.every(image => returnedImages.push(this.fromRawData(image)));
+        
+        return returnedImages;
     }
 }
 
@@ -286,9 +464,9 @@ export class Soc {
 export class Manufacturer {
     name: string;
     links: Array<Link>;
-    logo: string;
+    logo: Image;
     
-    constructor(name: string, links: Array<Link>, logo: string) {
+    constructor(name: string, links: Array<Link>, logo: Image) {
         this.name = name;
         this.links = links;
         this.logo = logo;
@@ -302,7 +480,7 @@ export class Manufacturer {
         const expectedFields = [
             {name: "name", type: "string"},
             {name: "links", type: "object"},
-            {name: "logo", type: "string"},
+            {name: "logo", type: "object"},
         ];
         
         // Checking if all required fields are present.
@@ -318,7 +496,7 @@ export class Manufacturer {
         return new this(
             rawData["name"],
             Link.fromRawDataArray(rawData["links"]),
-            rawData["logo"],
+            Image.fromRawData(rawData["logo"]),
         );
     }
     
@@ -393,12 +571,15 @@ export class SbcVariant {
     
     private remarks: Array<string>;
     
+    private readonly pictures: Array<Image>;
+    
     constructor(commonVariant: SbcVariant | null, links: Array<Link>, ram: SbcVariantRam | null,
-                remarks: Array<string>) {
+                remarks: Array<string>, pictures: Array<Image>) {
         this.commonVariant = commonVariant;
         this.links = links;
         this.ram = ram;
         this.remarks = remarks;
+        this.pictures = pictures;
     }
     
     public getLinks(): Array<Link> {
@@ -407,6 +588,10 @@ export class SbcVariant {
     
     public getRemarks(): Array<string> {
         return this.remarks.concat(this.commonVariant !== null ? this.commonVariant.remarks : []);
+    }
+    
+    public getPictures(): Array<Image> {
+        return this.pictures.concat(this.commonVariant !== null ? this.commonVariant.pictures : []);
     }
     
     public getRam(): SbcVariantRam {
@@ -431,6 +616,7 @@ export class SbcVariant {
             {name: "links", type: "object", nullable: true, omittable: true},
             {name: "ram", type: "object", nullable: true, omittable: true},
             {name: "remarks", type: "object", nullable: true, omittable: true},
+            {name: "pictures", type: "object", nullable: true, omittable: true},
         ];
         
         // Checking if non-omittable fields are present, and setting the omitted ones as null.
@@ -461,6 +647,7 @@ export class SbcVariant {
             rawData["links"] === null ? new Array<Link> : rawData["links"],
             rawData["ram"],
             rawData["remarks"] === null ? new Array<string> : rawData["remarks"],
+            rawData["pictures"] === null ? new Array<Image> : Image.fromRawDataArray(rawData["pictures"]),
         );
     }
 }
@@ -470,13 +657,15 @@ export class Sbc {
     manufacturer_id: string;
     commonVariant: SbcVariant | null;
     variants: Map<string, SbcVariant>;
+    picture: Image;
     
     constructor(name: string, manufacturer_id: string, commonVariant: SbcVariant | null,
-                variants: Map<string, SbcVariant>) {
+                variants: Map<string, SbcVariant>, picture: Image) {
         this.name = name;
         this.manufacturer_id = manufacturer_id;
         this.commonVariant = commonVariant;
         this.variants = variants;
+        this.picture = picture;
     }
     
     getVariants(): Array<SbcVariant> {
@@ -492,6 +681,7 @@ export class Sbc {
             {name: "options", type: "object"},
             {name: "expansions", type: "object"},
             {name: "warnings", type: "object"},
+            {name: "picture", type: "object"},
         ];
         
         // Checking if all required fields are present.
@@ -521,7 +711,8 @@ export class Sbc {
             rawData["name"],
             rawData["manufacturer_id"],
             commonVariant,
-            otherVariants
+            otherVariants,
+            Image.fromRawData(rawData["picture"])
         );
     }
     
@@ -540,24 +731,116 @@ export class Sbc {
     }
 }
 
+export class License {
+    name: string
+    link: Link
+    
+    constructor(name: string, link: Link) {
+        this.name = name;
+        this.link = link;
+    }
+    
+    static fromRawData(rawData: Record<string, any>): License {
+        const expectedFields = [
+            {name: "name", type: "string"},
+            {name: "link", type: "object"},
+        ];
+        
+        // Checking if all required fields are present.
+        if(!expectedFields.every(field => field.name in rawData)) {
+            throw new Error('A license is missing one or more fields !');
+        }
+        
+        // Checking if the object fields are properly typed.
+        if(!expectedFields.every(field => field.name in rawData && typeof rawData[field.name] === field.type)) {
+            throw new Error("A license's field's isn't properly typed !");
+        }
+        
+        return new this(
+            rawData["name"],
+            Link.fromRawData(rawData["link"]),
+        );
+    }
+    
+    static fromRawDataMap(rawData: object): Map<string, License> {
+        if(!(typeof rawData === "object")) {
+            throw new Error("The given raw data for a manufacturer isn't an object !");
+        }
+        
+        const returnedLicenses: Map<string, License> = new Map<string, License>();
+        
+        new Map(Object.entries(rawData)).forEach((rawLicense: object, key: string) => {
+            returnedLicenses.set(key, this.fromRawData(rawLicense))
+        });
+        
+        return returnedLicenses;
+    }
+}
+
 export class Root {
     cpu: Map<string, Cpu>;
     manufacturer: Map<string, Manufacturer>;
     sbc: Map<string, Sbc>;
     soc: Map<string, Soc>;
+    license: Map<string, License>;
+    author: Map<string, Author>;
     version: number;
     
     constructor(cpu: Map<string, Cpu>, manufacturer: Map<string, Manufacturer>, sbc: Map<string, Sbc>,
-                soc: Map<string, Soc>, version: number) {
+                soc: Map<string, Soc>, license: Map<string, License>, author: Map<string, Author>, version: number) {
         this.cpu = cpu;
         this.manufacturer = manufacturer;
         this.sbc = sbc;
         this.soc = soc;
+        this.license = license;
+        this.author = author;
         this.version = version;
     }
     
+    getFromManufacturer(manufacturerId: string): Root {
+        // Checking if the desired manufacturer exists.
+        const targetedManufacturer: Manufacturer | undefined = this.manufacturer.get(manufacturerId)
+        
+        if(!targetedManufacturer) {
+            throw Error("The manufacturer '"+manufacturerId+"' is unknown !");
+        }
+        
+        // Filtering out the current root into a new blank one.
+        const filteredRoot: Root = this.getBlankCopy();
+        
+        filteredRoot.manufacturer.set(manufacturerId, targetedManufacturer);
+        
+        this.cpu.forEach((value, key) => {
+            // TODO: Add once the proper fields are added in Cpu !
+        });
+        
+        this.soc.forEach((value, key) => {
+            // TODO: Add once the proper fields are added in Cpu !
+        });
+        
+        this.sbc.forEach((sbc, key) => {
+            if(sbc.manufacturer_id === manufacturerId) {
+                filteredRoot.sbc.set(key, sbc);
+            }
+        });
+        
+        return filteredRoot;
+    }
+    
+    getBlankCopy(): Root {
+        return new Root(
+            new Map<string, Cpu>(),
+            new Map<string, Manufacturer>(),
+            new Map<string, Sbc>(),
+            new Map<string, Soc>(),
+            new Map<string, License>(),
+            new Map<string, Author>(),
+            this.version
+        );
+    }
+    
     static fromRawData(rawData: Record<string, any>): Root {
-        const expectedFields: Array<string> = ["cpu", "manufacturer", "sbc", "soc"];
+        const expectedFields: Array<string> = ["cpu", "manufacturer", "sbc", "soc", "license", "author"];
         
         // Checking if all required fields are present.
         if(!expectedFields.every(fieldName => fieldName in rawData)) {
@@ -574,6 +857,8 @@ export class Root {
             Manufacturer.fromRawDataMap(rawData["manufacturer"]),
             Sbc.fromRawDataMap(rawData["sbc"]),
             Soc.fromRawDataMap(rawData["soc"]),
+            License.fromRawDataMap(rawData["license"]),
+            Author.fromRawDataMap(rawData["author"]),
             -1
         );
     }
@@ -584,6 +869,8 @@ export class Root {
             new Map<string, Manufacturer>(),
             new Map<string, Sbc>(),
             new Map<string, Soc>(),
+            new Map<string, License>(),
+            new Map<string, Author>(),
             -1
         );
     }

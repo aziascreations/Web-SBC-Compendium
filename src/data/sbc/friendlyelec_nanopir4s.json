@@ -9,17 +9,39 @@
 					"title": "Manufacturer's product's page",
 					"url": "https://www.friendlyelec.com/index.php?route=product/product&path=69&product_id=284",
 					"official": true,
-					"store": true,
-					"wiki": false
+					"store": true
 				},
 				{
 					"title": "Manufacturer's product's wiki page",
 					"url": "https://wiki.friendlyelec.com/wiki/index.php/NanoPi_R4S",
 					"official": true,
-					"store": false,
 					"wiki": true
 				}
+			],
+			"pictures": [
+				{
+					"url": "/imgs/friendlyelec/nanopir4s/NanoPi_R4S-1GB_Overview.jpg",
+					"description": "NanoPi R4S without metal case (1GB variant)",
+					"attribution": {"author": "friendlyelec", "license": "friendlyelec"}
+				},
+				{
+					"url": "/imgs/friendlyelec/nanopir4s/R4SC-01.jpg",
+					"description": "TODO", "attribution": {"author": "friendlyelec", "license": "friendlyelec"}
+				},
+				{
+					"url": "/imgs/friendlyelec/nanopir4s/R4SC-02.jpg",
+					"description": "TODO", "attribution": {"author": "friendlyelec", "license": "friendlyelec"}
+				},
+				{
+					"url": "/imgs/friendlyelec/nanopir4s/R4SC-03.jpg",
+					"description": "TODO", "attribution": {"author": "friendlyelec", "license": "friendlyelec"}
+				},
+				{
+					"url": "/imgs/friendlyelec/nanopir4s/R4SC-04.jpg",
+					"description": "TODO", "attribution": {"author": "friendlyelec", "license": "friendlyelec"}
+				}
 			]
+			
 		},
 		"4gb": {
 			"name": "4GB Variant",
@@ -29,6 +51,20 @@
 			},
 			"remarks": [
 				"//The type of RAM may be DDR3, the official specification is not clear."
+			],
+			"pictures": [
+				{
+					"url": "/imgs/friendlyelec/nanopir4s/NanoPi_R4S-4GB_Front.jpg",
+					"description": "TODO", "attribution": {"author": "friendlyelec", "license": "friendlyelec"}
+				},
+				{
+					"url": "/imgs/friendlyelec/nanopir4s/NanoPi_R4S-4GB_Back.jpg",
+					"description": "TODO", "attribution": {"author": "friendlyelec", "license": "friendlyelec"}
+				},
+				{
+					"url": "/imgs/friendlyelec/nanopir4s/NanoPi_R4S_4GB_Layout.jpg",
+					"description": "TODO", "attribution": {"author": "friendlyelec", "license": "friendlyelec"}
+				}
 			]
 		},
 		"1gb": {
@@ -36,9 +72,31 @@
 			"ram": {
 				"capacity": 1073741824,
 				"type": "DDR3"
-			}
+			},
+			"pictures": [
+				{
+					"url": "/imgs/friendlyelec/nanopir4s/NanoPi_R4S-1GB_01B.jpg",
+					"description": "TODO", "attribution": {"author": "friendlyelec", "license": "friendlyelec"}
+				},
+				{
+					"url": "/imgs/friendlyelec/nanopir4s/NanoPi_R4S-1GB_Back.jpg",
+					"description": "TODO", "attribution": {"author": "friendlyelec", "license": "friendlyelec"}
+				},
+				{
+					"url": "/imgs/friendlyelec/nanopir4s/NanoPi_R4S_Layout.jpg",
+					"description": "TODO", "attribution": {"author": "friendlyelec", "license": "friendlyelec"}
+				}
+			]
 		}
 	},
+	
+	"picture": {
+		"url": "/imgs/friendlyelec/nanopir4s/R4SC-01.jpg",
+		"description": "NanoPi R4S with metal case",
+		"attribution": {"author": "friendlyelec", "license": "friendlyelec"}
+	},
+	
+	
 	"options": [],
 	"expansions": [],
 	"warnings": []

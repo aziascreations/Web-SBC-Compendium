@@ -5,6 +5,7 @@ import {CrashScreen} from "./screens/crash";
 import {BrowseScreen} from "./screens/browse";
 import {SearchScreen} from "./screens/search";
 import {fadeIn, fadeOut} from "./animations";
+import {App} from "../data/app";
 
 const screenContainerId: string = "screen-container";
 const crashScreenId: string = "screen-crash";
@@ -29,12 +30,12 @@ class FatalInterfaceError extends Error {
     }
 }
 
-export function registerAllScreens(): boolean {
-    registerScreen(loadingScreen);
-    registerScreen(homeScreen);
-    registerScreen(crashScreen);
-    registerScreen(browseScreen);
-    registerScreen(searchScreen);
+export function registerAllScreens(newParentApp: App): boolean {
+    registerScreen(loadingScreen, newParentApp);
+    registerScreen(homeScreen, newParentApp);
+    registerScreen(crashScreen, newParentApp);
+    registerScreen(browseScreen, newParentApp);
+    registerScreen(searchScreen, newParentApp);
     return false;
 }
 
