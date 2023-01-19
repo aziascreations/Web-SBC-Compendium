@@ -1,3 +1,6 @@
+import {formatBytes} from "../utils/units";
+
+const COMMON_SBC_VARIANT_KEY = "_common";
 
 export class Link {
     title: string;
@@ -334,17 +337,223 @@ export class Manufacturer {
     }
 }
 
+export class SbcVariantRam {
+    capacity: number;
+    type: string;
+    
+    constructor(capacity: number, type: string) {
+        this.capacity = capacity;
+        this.type = type;
+    }
+    
+    static fromRawData(rawData: Record<string, any>): SbcVariantRam {
+        const expectedFields = [
+            {name: "capacity", type: "number"},
+            {name: "type", type: "string"},
+        ];
+        
+        // Checking if all required fields are present.
+        if(!expectedFields.every(field => field.name in rawData)) {
+            throw new Error("A SBC variant's RAM is missing one or more fields !");
+        }
+        
+        // Checking if the object fields are properly typed.
+        if(!expectedFields.every(field => field.name in rawData && typeof rawData[field.name] === field.type)) {
+            throw new Error("A SBC variant's RAM field's isn't properly typed !");
+        }
+        
+        return new this(
+            rawData["capacity"],
+            rawData["type"],
+        );
+    }
+    
+    public getFormattedSizes(decimalCount: number = 3): {si: string, binary: string} {
+        return formatBytes(this.capacity, decimalCount);
+    }
+    
+    public getFormattedSiSize(decimalCount: number = 3): string {
+        return formatBytes(this.capacity, decimalCount).si;
+    }
+    
+    public getFormattedBinarySize(decimalCount: number = 3): string {
+        return formatBytes(this.capacity, decimalCount).binary;
+    }
+}
+
+export class SbcVariant {
+    // Parent variant on which this and all variants of a given SBC may be based.
+    private readonly commonVariant: SbcVariant | null;
+    
+    // Link(s) related to this variant and this variant only.
+    // Has to be grabbed from the "getLinks()" class methods to resolve variants inheritance.
+    private links: Array<Link>;
+    
+    private readonly ram: SbcVariantRam | null;
+    
+    private remarks: Array<string>;
+    
+    constructor(commonVariant: SbcVariant | null, links: Array<Link>, ram: SbcVariantRam | null,
+                remarks: Array<string>) {
+        this.commonVariant = commonVariant;
+        this.links = links;
+        this.ram = ram;
+        this.remarks = remarks;
+    }
+    
+    public getLinks(): Array<Link> {
+        return this.links.concat(this.commonVariant !== null ? this.commonVariant.links : []);
+    }
+    
+    public getRemarks(): Array<string> {
+        return this.remarks.concat(this.commonVariant !== null ? this.commonVariant.remarks : []);
+    }
+    
+    public getRam(): SbcVariantRam {
+        if(this.ram !== null) {
+            return this.ram;
+        }
+        
+        // Checking if the common variant has it.
+        // Has to be done after the 1st check to enable proper recursion.
+        // If done first, this check could raise an exception even if the children variant has the "ram" info.
+        if(this.commonVariant !== null) {
+            return this.commonVariant.getRam();
+        }
+        
+        // Shouldn't happen since this field is checked during parsing.
+        throw new Error("Reeee!");
+    }
+    
+    static fromRawData(rawData: Record<string, any>, commonVariant: SbcVariant | null = null): SbcVariant {
+        // TODO: Expand this system to make is use default values on null or omitted fields automatically.
+        const expectedFields = [
+            {name: "links", type: "object", nullable: true, omittable: true},
+            {name: "ram", type: "object", nullable: true, omittable: true},
+            {name: "remarks", type: "object", nullable: true, omittable: true},
+        ];
+        
+        // Checking if non-omittable fields are present, and setting the omitted ones as null.
+        // Makes later checks easier and cleaner.
+        expectedFields.forEach(field => {
+            // Checking if non-omittable fields are present.
+            if(!field.omittable && !(field.name in rawData)) {
+                throw new Error("Error 419");
+            }
+            // Setting omitted omittable fields to null.
+            if(field.omittable && !(field.name in rawData)) {
+                rawData[field.name] = null;
+            }
+            // Checking for non-nullable fields.
+            if(rawData[field.name] === null && !field.nullable) {
+                throw new Error("Error 420");
+            }
+            // Checking if the field is properly typed.
+            if(!(typeof rawData[field.name] === field.type)) {
+                throw new Error("Error 421");
+            }
+        });
+        
+        // WARNING: Typescript doesn't warn you if one of these fields is null when the constructor doesn't allow it !
+        // TODO: Check if making them all nullable and handled in the getters would be better.
+        return new this(
+            commonVariant,
+            rawData["links"] === null ? new Array<Link> : rawData["links"],
+            rawData["ram"],
+            rawData["remarks"] === null ? new Array<string> : rawData["remarks"],
+        );
+    }
+}
+
+export class Sbc {
+    name: string;
+    manufacturer_id: string;
+    commonVariant: SbcVariant | null;
+    variants: Map<string, SbcVariant>;
+    
+    constructor(name: string, manufacturer_id: string, commonVariant: SbcVariant | null,
+                variants: Map<string, SbcVariant>) {
+        this.name = name;
+        this.manufacturer_id = manufacturer_id;
+        this.commonVariant = commonVariant;
+        this.variants = variants;
+    }
+    
+    getVariants(): Array<SbcVariant> {
+        // TODO: Get dynamically !
+        return new Array<SbcVariant>();
+    }
+    
+    static fromRawData(rawData: Record<string, any>): Sbc {
+        const expectedFields = [
+            {name: "name", type: "string"},
+            {name: "manufacturer_id", type: "string"},
+            {name: "variants", type: "object"},
+            {name: "options", type: "object"},
+            {name: "expansions", type: "object"},
+            {name: "warnings", type: "object"},
+        ];
+        
+        // Checking if all required fields are present.
+        if(!expectedFields.every(field => field.name in rawData)) {
+            throw new Error("A SBC is missing one or more fields !");
+        }
+        
+        // Checking if the object fields are properly typed.
+        if(!expectedFields.every(field => field.name in rawData && typeof rawData[field.name] === field.type)) {
+            throw new Error("A SBC's field's isn't properly typed !");
+        }
+        
+        const commonVariant = rawData["variants"][COMMON_SBC_VARIANT_KEY] ?
+            SbcVariant.fromRawData(rawData["variants"][COMMON_SBC_VARIANT_KEY]) : null;
+        
+        const otherVariants: Map<string, SbcVariant> = new Map<string, SbcVariant>();
+        new Map(Object.entries(rawData["variants"])).forEach((rawSbcVariant: any, key: string) => {
+            if(typeof rawSbcVariant !== "object") {
+                throw new Error("kjsdfh");
+            }
+            if(key !== COMMON_SBC_VARIANT_KEY) {
+                otherVariants.set(key, SbcVariant.fromRawData(rawSbcVariant));
+            }
+        });
+        
+        return new this(
+            rawData["name"],
+            rawData["manufacturer_id"],
+            commonVariant,
+            otherVariants
+        );
+    }
+    
+    static fromRawDataMap(rawData: object): Map<string, Sbc> {
+        if(!(typeof rawData === "object")) {
+            throw new Error("The given raw data for a SBC isn't an object !");
+        }
+        
+        const returnedSbcs: Map<string, Sbc> = new Map<string, Sbc>();
+        
+        new Map(Object.entries(rawData)).forEach((rawSbc: object, key: string) => {
+            returnedSbcs.set(key, this.fromRawData(rawSbc));
+        });
+        
+        return returnedSbcs;
+    }
+}
+
 export class Root {
     cpu: Map<string, Cpu>;
     manufacturer: Map<string, Manufacturer>;
-    sbc: Array<any>;
+    sbc: Map<string, Sbc>;
     soc: Map<string, Soc>;
+    version: number;
     
-    constructor(cpu: Map<string, Cpu>, manufacturer: Map<string, Manufacturer>, sbc: Array<any>, soc: Map<string, Soc>) {
+    constructor(cpu: Map<string, Cpu>, manufacturer: Map<string, Manufacturer>, sbc: Map<string, Sbc>,
+                soc: Map<string, Soc>, version: number) {
         this.cpu = cpu;
         this.manufacturer = manufacturer;
         this.sbc = sbc;
         this.soc = soc;
+        this.version = version;
     }
     
     static fromRawData(rawData: Record<string, any>): Root {
@@ -363,8 +572,9 @@ export class Root {
         return new this(
             Cpu.fromRawDataMap(rawData["cpu"]),
             Manufacturer.fromRawDataMap(rawData["manufacturer"]),
-            [],
-            Soc.fromRawDataMap(rawData["soc"])
+            Sbc.fromRawDataMap(rawData["sbc"]),
+            Soc.fromRawDataMap(rawData["soc"]),
+            -1
         );
     }
     
@@ -372,8 +582,9 @@ export class Root {
         return new this(
             new Map<string, Cpu>(),
             new Map<string, Manufacturer>(),
-            [],
-            new Map<string, Soc>()
+            new Map<string, Sbc>(),
+            new Map<string, Soc>(),
+            -1
         );
     }
 }

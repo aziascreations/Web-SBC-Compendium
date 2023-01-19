@@ -1,3 +1,4 @@
 {
-	"filter.cpu.core.count.name": "Core Count"
+	"filter.cpu.core.count.name": "Core Count",
+	"exception.types.sbc.variant.fields.nullable": "Waaaaa !"
 }

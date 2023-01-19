@@ -2,7 +2,7 @@
 	"name": "NanoPi R4S",
 	"manufacturer_id": "friendlyelec",
 	"variants": {
-		"common": {
+		"_common": {
 			"soc": "rockchip_rk3399",
 			"links": [
 				{
