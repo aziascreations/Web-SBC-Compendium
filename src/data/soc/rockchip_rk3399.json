@@ -1,0 +1,29 @@
+{
+	"name": "Rockchip RK3399",
+	"cpus": [
+		{
+			"id": "arm_cortex_a53",
+			"count": 4
+		},
+		{
+			"id": "arm_cortex_a72",
+			"count": 2
+		}
+	],
+	"links": [
+		{
+			"title": "Rockchip Wiki's Page",
+			"url": "https://rockchip.wikidot.com/rk3399",
+			"official": false,
+			"store": false,
+			"wiki": true
+		},
+		{
+			"title": "Rockchip's Wikipedia Page",
+			"url": "https://en.wikipedia.org/wiki/Rockchip#RK3399",
+			"official": false,
+			"store": false,
+			"wiki": true
+		}
+	]
+}

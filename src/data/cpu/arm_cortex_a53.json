@@ -1,0 +1,31 @@
+{
+	"name": "ARM Cortex-A53",
+	"launch": "2012",
+	
+	"designer": "ARM Holdings",
+	"micro_architecture": "ARMv8-A",
+	
+	"caches": {
+		"l1": {
+			"min": 8192,
+			"max": 65536,
+			"note": null
+		},
+		"l2": {
+			"min": 131072,
+			"max": 2097152,
+			"note": null
+		},
+		"l3": null
+	},
+	
+	"links": [
+		{
+			"title": "Wikipedia Page",
+			"url": "https://en.wikipedia.org/wiki/ARM_Cortex-A53",
+			"official": false,
+			"store": false,
+			"wiki": true
+		}
+	]
+}

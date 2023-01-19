@@ -1,0 +1,20 @@
+{
+	"name": "Raspberry Pi Foundation",
+	"links": [
+		{
+			"title": "Official Website",
+			"url": "https://www.raspberrypi.org/",
+			"official": true,
+			"store": false,
+			"wiki": false
+		},
+		{
+			"title": "Wikipedia Page",
+			"url": "https://en.wikipedia.org/wiki/Raspberry_Pi",
+			"official": false,
+			"store": false,
+			"wiki": true
+		}
+	],
+	"logo": "Raspberry_Pi.svg"
+}

@@ -1,0 +1,12 @@
+# IDE
+.idea/
+
+# NodeJS
+node_modules/
+
+# Build process
+build/
+
+# Temp
+src/images
+resources

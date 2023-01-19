@@ -1,0 +1,31 @@
+{
+	"name": "ARM Cortex-A72",
+	"launch": "2016",
+	
+	"designer": "ARM Holdings",
+	"micro_architecture": "ARMv8-A",
+	
+	"caches": {
+		"l1": {
+			"min": 81920,
+			"max": 81920,
+			"note": "(48 KiB I-cache with parity, 32 KiB D-cache with ECC) per core"
+		},
+		"l2": {
+			"min": 524288,
+			"max": 4194304,
+			"note": null
+		},
+		"l3": null
+	},
+	
+	"links": [
+		{
+			"title": "Wikipedia Page",
+			"url": "https://en.wikipedia.org/wiki/ARM_Cortex-A72",
+			"official": false,
+			"store": false,
+			"wiki": true
+		}
+	]
+}

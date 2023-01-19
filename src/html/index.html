@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<link rel="stylesheet" href="/resources/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/resources/sbc-compendium/css/app.css">
+	
+	<title>Hello, world!</title>
+</head>
+<body>
+	<header class="p-3 bg-dark text-white">
+		<div class="container">
+			<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+				<a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+					<svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+						<use xlink:href="#bootstrap"></use>
+					</svg>
+				</a>
+				<ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+					<li><a href="#" data-target-screen="home" class="nav-link px-2 text-secondary">Home</a></li>
+					<li><a href="#" data-target-screen="search" class="nav-link px-2 text-white">Search</a></li>
+					<li><a href="#" data-target-screen="browse" class="nav-link px-2 text-white">Browse</a></li>
+					<li><a href="#" data-target-screen="loading" class="nav-link px-2 text-white">Loading</a></li>
+					<li><a href="#" data-target-screen="crash" class="nav-link px-2 text-white">Crash</a></li>
+				</ul>
+				<form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+					<input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
+				</form>
+			</div>
+		</div>
+	</header>
+	
+	<main id="screen-container">
+		<div id="screen-loading" class="screen debug">
+			<p class="loading-text" id="loading-text-debug" hidden>
+				This screen was shown again after the loading process was completed !<br>
+				All paragraph have been unhidden for debugging purpose.
+			</p>
+			<p class="loading-text" id="loading-text-initial">Waiting for page to load...</p>
+			<p class="loading-text" id="loading-text-data-first" hidden>Loading all the data...</p>
+			<p class="loading-text" id="loading-text-data-check" hidden>Checking if the data is up-to-date...</p>
+			<p class="loading-text" id="loading-text-data-update" hidden>Downloading a newer version of the data...</p>
+			<p class="loading-text" id="loading-text-data-final" hidden>Switching to the correct screen...</p>
+			<!-- https://loading.io/spinner/double-ring/-disqus-ring-donut-rotate-double -->
+		</div>
+		<div id="screen-crash" class="screen debug" hidden>
+			The website was unable to work:<br><span id="crash-message">{UNSET}</span>
+		</div>
+		<div id="screen-home" class="screen debug" hidden>
+			Home !
+		</div>
+		<div id="screen-search" class="screen debug" hidden>
+			Search
+		</div>
+		<div id="screen-browse" class="screen debug" hidden>
+			Browse
+		</div>
+	</main>
+	
+	<footer class="footer mt-auto py-3 bg-light">
+		<div class="container">
+			<span class="text-muted">Place sticky footer content here.</span>
+		</div>
+	</footer>
+	
+	<template></template>
+	
+	<script src="/resources/bootstrap/5.3.0-alpha1/js/bootstrap.min.js"></script>
+	<script type="module" src="/resources/sbc-compendium/js/app.js"></script>
+	<!--<script src="/resources/sbc-compendium/js/bundle.min.js"></script>-->
+</body>
+</html>

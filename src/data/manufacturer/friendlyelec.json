@@ -1,0 +1,20 @@
+{
+	"name": "FriendlyElec",
+	"links": [
+		{
+			"title": "Official Website",
+			"url": "https://www.friendlyelec.com/",
+			"official": true,
+			"store": false,
+			"wiki": false
+		},
+		{
+			"title": "Official Wiki Page",
+			"url": "https://wiki.friendlyelec.com/wiki/index.php/Main_Page",
+			"official": true,
+			"store": false,
+			"wiki": true
+		}
+	],
+	"logo": "friendlyelec.png"
+}
