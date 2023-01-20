@@ -36,8 +36,23 @@ export class BrowseScreen extends AppScreen {
             
             // Adding every product to the previous template.
             const manufacturerRoot: Root = this.parentApp.rootData.getFromManufacturer(manufacturerId);
-            
+    
             manufacturerRoot.sbc.forEach((sbc, sbcId) => {
+                const eNewItem: HTMLElement = (
+                    getTemplateById(Templates.BrowserManufacturerItem) as HTMLTemplateElement
+                ).content.cloneNode(true) as HTMLElement;
+        
+                const eItemName = eNewItem.querySelector("#"+TemplateComponents.BrowserManufacturerItemName) as HTMLElement;
+                const eItemImage = eNewItem.querySelector("#"+TemplateComponents.BrowserManufacturerItemImage) as HTMLImageElement;
+                eItemName.removeAttribute("id");
+                eItemImage.removeAttribute("id");
+                eItemName.textContent = sbc.name;
+                eItemImage.src = sbc.picture.url.toString();
+        
+                eSectionEntries.appendChild(eNewItem);
+            });
+    
+            manufacturerRoot.soc.forEach((soc, socId) => {
                 const eNewItem: HTMLElement = (
                     getTemplateById(Templates.BrowserManufacturerItem) as HTMLTemplateElement
                 ).content.cloneNode(true) as HTMLElement;
@@ -46,8 +61,8 @@ export class BrowseScreen extends AppScreen {
                 const eItemImage = eNewItem.querySelector("#"+TemplateComponents.BrowserManufacturerItemImage) as HTMLImageElement;
                 eItemName.removeAttribute("id");
                 eItemImage.removeAttribute("id");
-                eItemName.textContent = sbc.name;
-                eItemImage.src = sbc.picture.url.toString();
+                eItemName.textContent = soc.name;
+                eItemImage.src = soc.picture.url.toString();
                 
                 eSectionEntries.appendChild(eNewItem);
             });

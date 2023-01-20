@@ -6,6 +6,7 @@ import {BrowseScreen} from "./screens/browse";
 import {SearchScreen} from "./screens/search";
 import {fadeIn, fadeOut} from "./animations";
 import {App} from "../data/app";
+import {CompareScreen} from "./screens/compare";
 
 const screenContainerId: string = "screen-container";
 const crashScreenId: string = "screen-crash";
@@ -21,6 +22,7 @@ export const homeScreen: HomeScreen = new HomeScreen();
 export const crashScreen: CrashScreen = new CrashScreen();
 export const browseScreen: BrowseScreen = new BrowseScreen();
 export const searchScreen: SearchScreen = new SearchScreen();
+export const compareScreen: CompareScreen = new CompareScreen();
 
 // Should never be exported to prevent catching it without a broad clause since it is fatal !
 class FatalInterfaceError extends Error {
@@ -36,6 +38,7 @@ export function registerAllScreens(newParentApp: App): boolean {
     registerScreen(crashScreen, newParentApp);
     registerScreen(browseScreen, newParentApp);
     registerScreen(searchScreen, newParentApp);
+    registerScreen(compareScreen, newParentApp);
     return false;
 }
 

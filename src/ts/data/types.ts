@@ -409,13 +409,17 @@ export class SocCpu {
 
 export class Soc {
     name: string;
+    manufacturer: string;
     cpus: Array<SocCpu>;
     links: Array<Link>;
+    picture: Image;
     
-    constructor(name: string, cpus: Array<SocCpu>, links: Array<Link>) {
+    constructor(name: string, manufacturer: string, cpus: Array<SocCpu>, links: Array<Link>, picture: Image) {
         this.name = name;
+        this.manufacturer = manufacturer;
         this.cpus = cpus;
         this.links = links;
+        this.picture = picture;
     }
     
     getCpuCoreCount(): number {
@@ -425,8 +429,10 @@ export class Soc {
     static fromRawData(rawData: Record<string, any>): Soc {
         const expectedFields = [
             {name: "name", type: "string"},
+            {name: "manufacturer", type: "string"},
             {name: "cpus", type: "object"},
             {name: "links", type: "object"},
+            {name: "picture", type: "object"},
         ]
         
         // Checking if all required fields are present.
@@ -441,8 +447,10 @@ export class Soc {
         
         return new this(
             rawData["name"],
+            rawData["manufacturer"],
             SocCpu.fromRawDataArray(rawData["cpus"]),
             Link.fromRawDataArray(rawData["links"]),
+            Image.fromRawData(rawData["picture"]),
         );
     }
     
@@ -654,15 +662,15 @@ export class SbcVariant {
 
 export class Sbc {
     name: string;
-    manufacturer_id: string;
+    manufacturer: string;
     commonVariant: SbcVariant | null;
     variants: Map<string, SbcVariant>;
     picture: Image;
     
-    constructor(name: string, manufacturer_id: string, commonVariant: SbcVariant | null,
+    constructor(name: string, manufacturer: string, commonVariant: SbcVariant | null,
                 variants: Map<string, SbcVariant>, picture: Image) {
         this.name = name;
-        this.manufacturer_id = manufacturer_id;
+        this.manufacturer = manufacturer;
         this.commonVariant = commonVariant;
         this.variants = variants;
         this.picture = picture;
@@ -676,7 +684,7 @@ export class Sbc {
     static fromRawData(rawData: Record<string, any>): Sbc {
         const expectedFields = [
             {name: "name", type: "string"},
-            {name: "manufacturer_id", type: "string"},
+            {name: "manufacturer", type: "string"},
             {name: "variants", type: "object"},
             {name: "options", type: "object"},
             {name: "expansions", type: "object"},
@@ -709,7 +717,7 @@ export class Sbc {
         
         return new this(
             rawData["name"],
-            rawData["manufacturer_id"],
+            rawData["manufacturer"],
             commonVariant,
             otherVariants,
             Image.fromRawData(rawData["picture"])
@@ -814,12 +822,14 @@ export class Root {
             // TODO: Add once the proper fields are added in Cpu !
         });
         
-        this.soc.forEach((value, key) => {
-            // TODO: Add once the proper fields are added in Cpu !
+        this.soc.forEach((soc, key) => {
+            if(soc.manufacturer === manufacturerId) {
+                filteredRoot.soc.set(key, soc);
+            }
         });
         
         this.sbc.forEach((sbc, key) => {
-            if(sbc.manufacturer_id === manufacturerId) {
+            if(sbc.manufacturer === manufacturerId) {
                 filteredRoot.sbc.set(key, sbc);
             }
         });

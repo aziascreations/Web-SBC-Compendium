@@ -10,3 +10,4 @@ build/
 # Temp
 src/images
 resources
+*.url

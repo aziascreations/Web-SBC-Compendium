@@ -1,0 +1,21 @@
+{
+	"name": "Rockchip Electronics Co., Ltd.",
+	"links": [
+		{
+			"title": "Official Website",
+			"url": "https://www.rock-chips.com/a/en/index.html",
+			"official": true
+		},
+		{
+			"title": "Wikipedia Page",
+			"url": "https://en.wikipedia.org/wiki/Rockchip",
+			"wiki": true
+		}
+	],
+	
+	"logo": {
+		"url": "/imgs/rockchip/logo.png",
+		"description": "Rockchip's logo",
+		"attribution": {"author": "rockchip", "license": "rockchip"}
+	}
+}

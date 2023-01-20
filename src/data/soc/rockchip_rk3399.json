@@ -1,5 +1,6 @@
 {
 	"name": "Rockchip RK3399",
+	"manufacturer": "rockchip",
 	"cpus": [
 		{
 			"id": "arm_cortex_a53",
@@ -21,5 +22,11 @@
 			"url": "https://en.wikipedia.org/wiki/Rockchip#RK3399",
 			"wiki": true
 		}
-	]
+	],
+	
+	"picture": {
+		"url": "/imgs/rockchip/rk3399.png",
+		"description": "Rockchip's RK3399 logo",
+		"attribution": {"author": "rockchip", "license": "rockchip"}
+	}
 }

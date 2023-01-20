@@ -70,6 +70,14 @@ Header unset Last-Modified
 Header unset Date
 Header unset ETag
 
+# Enabling compression
+Header always set X-Debug-Was-Compressed-By-Htaccess "No"
+<FilesMatch "\.(html?|css|js|json|ico|svg|jpg|jpeg|png|otf|ttf)$">
+	SetOutputFilter DEFLATE
+	Header unset X-Debug-Was-Compressed-By-Htaccess
+	Header always set X-Debug-Was-Compressed-By-Htaccess "Yes"
+</FilesMatch>
+
 # Handling all other redirections.
 RewriteEngine On
 
