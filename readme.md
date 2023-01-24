@@ -26,6 +26,13 @@ TODO
 The code, utilities and (maybe: formatted data files) are licensed under:<br>
 [Unlicensed](LICENSE) (Public Domain)
 
+### Zod
+The [Zod](https://github.com/colinhacks/zod) library is used during the initial data parsing process in the application.
+
+It is licensed under the [MIT License](https://github.com/colinhacks/zod/blob/master/LICENSE).
+
+TODO: Include it in the page and build !
+
 ### External resources
 Resources such as images, raw specifications and ??? are ?.
 

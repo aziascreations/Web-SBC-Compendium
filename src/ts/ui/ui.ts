@@ -101,6 +101,7 @@ export function showCrashMessage(message: string) {
 export function registerScreenNavigatorElements(): void {
     const potentialTargetingElements: HTMLCollectionOf<Element> = document.getElementsByClassName(screenNavigatorClass);
     
+    // @ts-ignore -> TS2488: Type 'HTMLCollectionOf<Element>' must have a '[Symbol.iterator]()' method that returns an iterator.
     for(const targetingElement of potentialTargetingElements) {
         const targetScreenId: string | null = targetingElement.getAttribute("data-"+screenNavigatorDataTarget);
         

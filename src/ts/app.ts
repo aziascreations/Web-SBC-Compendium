@@ -5,7 +5,7 @@ import {
     registerScreenNavigatorElements, homeScreen
 } from "./ui/ui";
 import {fadeOut} from "./ui/animations";
-import {Root} from "./data/types";
+import {Root, testZod} from "./data/types";
 import {App} from "./data/app";
 
 const dataBlobUrl = new URL("http://" + window.location.hostname + "/resources/sbc-compendium/data/data.json");
@@ -23,6 +23,9 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log(data);
             const rootData = Root.fromRawData(data);
             console.log(rootData);
+            
+            //testTypia();
+            //testZod();
             
             const newRootApp = new App(rootData);
             appDebugAccess = newRootApp;

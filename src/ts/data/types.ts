@@ -1,6 +1,27 @@
 import {formatBytes} from "../utils/units";
 
+//import {isParse} from "../external/typia/src/module";
+//
+//export function testTypia() {
+//    console.log(isParse<Attribution>("{\"author\": \"friendlyelec\", \"license\": \"friendlyelec\"}"));
+//}
+
+import {z} from "../external/zod/src/index";
+
 const COMMON_SBC_VARIANT_KEY = "_common";
+
+const linkSchema = z.object({
+    title: z.string(),
+    url: z.string(),
+    official: z.boolean(),
+    store: z.boolean(),
+    wiki: z.boolean(),
+});
+
+export type linkType = z.infer<typeof linkSchema>;
+
+
+
 
 export class Link {
     title: string;

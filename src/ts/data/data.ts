@@ -1,4 +1,4 @@
-import {CpuCache, Root} from "types";
+import {CpuCache, Root} from "./types";
 
 export function fetchDataBlob(url: URL): Promise<any> {
     return new Promise((resolve, reject) => {
