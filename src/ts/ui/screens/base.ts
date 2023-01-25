@@ -1,22 +1,24 @@
 import {App} from "../../data/app";
 
-export const registeredScreens: Array<AppScreen> = [];
-
 const screenDomIdPrefix = "screen-";
 
 export abstract class AppScreen {
     id: string;
-    element: HTMLElement;
-    parentApp: App = App.getBlank();
+    screenElement: HTMLElement;
     
-    protected constructor(id: string) {
+    // Reference to the "App" instance into which this screen is contained in order to easily access the "root" data
+    //   without making functions with 20 different parameters.
+    parentApp: App;
+    
+    protected constructor(id: string, parentApp: App) {
         this.id = id;
+        this.parentApp = parentApp;
         
         const eCrashScreen: HTMLElement | null = document.getElementById(this.getHtmlId());
         if(eCrashScreen == null) {
             throw new ScreenInstantiationError("Failed to find the DOM element for '"+this.getHtmlId()+"' !");
         }
-        this.element = eCrashScreen;
+        this.screenElement = eCrashScreen;
     }
     
     getHtmlId(): string {
@@ -45,22 +47,4 @@ export class ScreenInstantiationError extends Error {
         super(msg);
         Object.setPrototypeOf(this, ScreenInstantiationError.prototype);
     }
-}
-
-export function getScreenById(id: string): AppScreen | null {
-    for(let screen of registeredScreens) {
-        if(screen.id == id) {
-            return screen;
-        }
-    }
-    return null;
-}
-
-export function registerScreen(screen: AppScreen, newParentApp: App): boolean {
-    if(getScreenById(screen.id) == null) {
-        screen.parentApp = newParentApp;
-        registeredScreens.push(screen);
-        return true;
-    }
-    return false;
 }

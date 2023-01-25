@@ -1,6 +1,3 @@
-[submodule "src/ts/external/typia"]
-	path = src/ts/external/typia
-	url = https://github.com/samchon/typia.git
 [submodule "src/ts/external/zod"]
 	path = src/ts/external/zod
 	url = https://github.com/colinhacks/zod.git

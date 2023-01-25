@@ -25,3 +25,15 @@ export function formatBytes(bytes: number, decimalCount: number = 3): {si: strin
         binary: bytes.toFixed(decimalCount) + " " + units[1][binaryUnitIndex]
     };
 }
+
+export function getFormattedSizes(bytes: number, decimalCount: number = 3): {si: string, binary: string} {
+    return formatBytes(bytes, decimalCount);
+}
+
+export function getFormattedSiSize(bytes: number, decimalCount: number = 3): string {
+    return formatBytes(bytes, decimalCount).si;
+}
+
+export function getFormattedBinarySize(bytes: number, decimalCount: number = 3): string {
+    return formatBytes(bytes, decimalCount).binary;
+}

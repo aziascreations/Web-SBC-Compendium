@@ -1,12 +1,13 @@
 import {AppScreen} from "./base";
 import {getTemplateById, TemplateComponents, Templates} from "../templates";
-import {Root} from "../../data/types";
+import {App} from "../../data/app";
+import {getFromManufacturer} from "../../data/utils";
 
 const ENTRIES_CONTAINER_ID = "container-browse-entries";
 
 export class BrowseScreen extends AppScreen {
-    constructor() {
-        super("browse");
+    constructor(parentApp: App) {
+        super("browse", parentApp);
     }
     
     onHidden(newScreen: AppScreen): void {
@@ -35,24 +36,24 @@ export class BrowseScreen extends AppScreen {
             eSectionTitle.textContent = manufacturer.name;
             
             // Adding every product to the previous template.
-            const manufacturerRoot: Root = this.parentApp.rootData.getFromManufacturer(manufacturerId);
-    
-            manufacturerRoot.sbc.forEach((sbc, sbcId) => {
+            const {cpus, sbcs, socs} = getFromManufacturer(this.parentApp.rootData, manufacturerId);
+            
+            sbcs.forEach((sbc, sbcId) => {
                 const eNewItem: HTMLElement = (
                     getTemplateById(Templates.BrowserManufacturerItem) as HTMLTemplateElement
                 ).content.cloneNode(true) as HTMLElement;
-        
+                
                 const eItemName = eNewItem.querySelector("#"+TemplateComponents.BrowserManufacturerItemName) as HTMLElement;
                 const eItemImage = eNewItem.querySelector("#"+TemplateComponents.BrowserManufacturerItemImage) as HTMLImageElement;
                 eItemName.removeAttribute("id");
                 eItemImage.removeAttribute("id");
                 eItemName.textContent = sbc.name;
                 eItemImage.src = sbc.picture.url.toString();
-        
+                
                 eSectionEntries.appendChild(eNewItem);
             });
-    
-            manufacturerRoot.soc.forEach((soc, socId) => {
+            
+            socs.forEach((soc, socId) => {
                 const eNewItem: HTMLElement = (
                     getTemplateById(Templates.BrowserManufacturerItem) as HTMLTemplateElement
                 ).content.cloneNode(true) as HTMLElement;

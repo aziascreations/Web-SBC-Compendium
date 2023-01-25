@@ -1,28 +1,14 @@
-import {AppScreen, getScreenById, registeredScreens, registerScreen} from './screens/base';
-import {LoadingScreen} from "./screens/loading";
-import {HomeScreen} from "./screens/home";
-import {CrashScreen} from "./screens/crash";
-import {BrowseScreen} from "./screens/browse";
-import {SearchScreen} from "./screens/search";
+import {AppScreen} from './screens/base';
 import {fadeIn, fadeOut} from "./animations";
-import {App} from "../data/app";
-import {CompareScreen} from "./screens/compare";
 
 const screenContainerId: string = "screen-container";
 const crashScreenId: string = "screen-crash";
 const commonScreenClass: string = "screen";
 
-const screenNavigatorClass: string = "nav-link";
-const screenNavigatorDataTarget: string = "target-screen";
+export const screenNavigatorClass: string = "nav-link";
+export const screenNavigatorDataTarget: string = "target-screen";
 
 const defaultTransitionTimeMs: number = 175;
-
-export const loadingScreen: LoadingScreen = new LoadingScreen();
-export const homeScreen: HomeScreen = new HomeScreen();
-export const crashScreen: CrashScreen = new CrashScreen();
-export const browseScreen: BrowseScreen = new BrowseScreen();
-export const searchScreen: SearchScreen = new SearchScreen();
-export const compareScreen: CompareScreen = new CompareScreen();
 
 // Should never be exported to prevent catching it without a broad clause since it is fatal !
 class FatalInterfaceError extends Error {
@@ -32,50 +18,41 @@ class FatalInterfaceError extends Error {
     }
 }
 
-export function registerAllScreens(newParentApp: App): boolean {
-    registerScreen(loadingScreen, newParentApp);
-    registerScreen(homeScreen, newParentApp);
-    registerScreen(crashScreen, newParentApp);
-    registerScreen(browseScreen, newParentApp);
-    registerScreen(searchScreen, newParentApp);
-    registerScreen(compareScreen, newParentApp);
-    return false;
-}
-
-export function getCurrentScreen(): AppScreen | null {
-    for(const screen of registeredScreens) {
-        if(!screen.element.hidden) {
+// Loops over all the given screens and returns the first screen that is currently being shown to the user.
+export function getCurrentScreen(screens: Array<AppScreen>): AppScreen | null {
+    for(const screen of screens) {
+        if(!screen.screenElement.hidden) {
             return screen;
         }
     }
     return null;
 }
 
+export function hideAllScreens(screens: Array<AppScreen>, doTransition: boolean = true): void {
+    for(const screen of screens) {
+        hideScreen(screen, doTransition).then(() => {});
+    }
+}
+
 export async function hideScreen(screen: AppScreen, doTransition: boolean = true) {
     if(!doTransition) {
-        screen.element.hidden = true;
+        screen.screenElement.hidden = true;
         return;
     }
-    await fadeOut(screen.element, defaultTransitionTimeMs);
+    await fadeOut(screen.screenElement, defaultTransitionTimeMs);
 }
 
 export async function showScreen(screen: AppScreen, doTransition: boolean = true) {
     if(!doTransition) {
-        screen.element.hidden = false;
+        screen.screenElement.hidden = false;
         return;
     }
-    await fadeIn(screen.element, defaultTransitionTimeMs);
-}
-
-export function hideAllScreens(doTransition: boolean = true): void {
-    for(const screen of registeredScreens) {
-        hideScreen(screen, false).then(() => {});
-    }
+    await fadeIn(screen.screenElement, defaultTransitionTimeMs);
 }
 
 // This function assumes that the given screen ID exists in the index.html file to some degree.
-export async function changeScreen(screenToShow: AppScreen) {
-    const hiddenScreen: AppScreen | null = getCurrentScreen();
+export async function changeScreen(screens: Array<AppScreen>, screenToShow: AppScreen) {
+    const hiddenScreen: AppScreen | null = getCurrentScreen(screens);
     
     if(hiddenScreen !== null) {
         hiddenScreen.onPreHidden(screenToShow);
@@ -91,37 +68,11 @@ export async function changeScreen(screenToShow: AppScreen) {
     }
 }
 
-export function showCrashMessage(message: string) {
-    hideAllScreens();
-    
-    showScreen(crashScreen, false).then(() => {});
-    // TODO: Set message !
-}
-
-export function registerScreenNavigatorElements(): void {
-    const potentialTargetingElements: HTMLCollectionOf<Element> = document.getElementsByClassName(screenNavigatorClass);
-    
-    // @ts-ignore -> TS2488: Type 'HTMLCollectionOf<Element>' must have a '[Symbol.iterator]()' method that returns an iterator.
-    for(const targetingElement of potentialTargetingElements) {
-        const targetScreenId: string | null = targetingElement.getAttribute("data-"+screenNavigatorDataTarget);
-        
-        if(targetScreenId == null) {
-            console.warn("Used a link with the '" + screenNavigatorClass + "' class but no '" + screenNavigatorDataTarget + "' class !");
-            console.warn(targetingElement);
-            continue;
-        }
-        
-        const targetScreen: AppScreen | null = getScreenById(targetScreenId);
-    
-        if(targetScreen == null) {
-            console.warn("Unable to find the screen with the '" + targetScreenId + "' ID !");
-            continue;
-        }
-        
-        (targetingElement as HTMLElement).onclick = (e) => {
-            if(!changeScreen(targetScreen)) {
-                showCrashMessage("Failed to switch to the '"+targetScreen.getHtmlId()+"' screen !")
-            }
+export function getScreenById(screens: Array<AppScreen>, id: string): AppScreen | null {
+    for(let screen of screens) {
+        if(screen.id == id) {
+            return screen;
         }
     }
+    return null;
 }
